@@ -13,7 +13,6 @@ struct OnboardingView: View {
     @State private var showPagination = false
     var body: some View {
         VStack {
-            // Show the Get Started page first
             if currentPage == 0 {
                 PageView(
                     title: "Tracking your mood can be easy!",
@@ -29,14 +28,12 @@ struct OnboardingView: View {
                     secondaryTextThree: "",
                     action: {
                         withAnimation {
-                            // Move to the second page when the "Get Started" button is clicked
                             currentPage = 1
-                            showPagination = true // After clicking, show pagination
+                            showPagination = true
                         }
                     }, overlayImageName:""
                 )
             } else {
-                // Show the TabView and pagination after the first page is clicked
                 TabView(
                     selection: $currentPage
                 ) {
@@ -54,7 +51,7 @@ struct OnboardingView: View {
                         secondaryTextThree: "",
                         action: {
                             withAnimation {
-                                currentPage = 2 // Move to the third page
+                                currentPage = 2
                             }
                         },
                         overlayImageName: ""
@@ -75,13 +72,13 @@ struct OnboardingView: View {
                         secondaryTextThree: "In an emergency, dial 911 or your local emergency number immediately!",
                         action: {
                             withAnimation {
-                                currentPage = 3 // Move to the fourth page
+                                currentPage = 3
                             }
                         },
                         overlayImageName: ""
                     )
                     .tag(2)
-
+                    
                     PageView(
                         title: "Never miss a dose!",
                         description: "Allow notifications, and we’ll help you stay on track with your medications.",
@@ -94,11 +91,12 @@ struct OnboardingView: View {
                         secondaryTextOne: "",
                         secondaryTextTwo: "",
                         secondaryTextThree: "",
-                    
+                        
                         action: {
                             withAnimation {
                                 hasSeenOnboarding = true
                                 print("hasSeenOnboarding after change: \(hasSeenOnboarding)")
+                                
                             }
                         },
                         overlayImageName: "pills"
@@ -108,17 +106,17 @@ struct OnboardingView: View {
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
                 .indexViewStyle(PageIndexViewStyle())
                 Spacer()
-                .onAppear {
-                    UIPageControl.appearance().currentPageIndicatorTintColor = UIColor(named: "dateColor") // Active dot color
-                    UIPageControl.appearance().pageIndicatorTintColor = UIColor.gray.withAlphaComponent(0.5) // Inactive dot color
-                }
+                    .onAppear {
+                        UIPageControl.appearance().currentPageIndicatorTintColor = UIColor(named: "dateColor")
+                        UIPageControl.appearance().pageIndicatorTintColor = UIColor.gray.withAlphaComponent(0.5)
+                    }
             }
         }
         .padding(.top, 30)
         .background(Color("backColor"))
     }
 }
-    
+
 struct PageView: View {
     var title: String
     var description: String
@@ -133,7 +131,7 @@ struct PageView: View {
     var secondaryTextThree: String
     var action: () -> Void
     var overlayImageName: String? = nil
-
+    
     var body: some View {
         VStack(spacing: 20) {
             VStack(spacing: 10) {
@@ -144,16 +142,16 @@ struct PageView: View {
                         .multilineTextAlignment(.center)
                     
                 }
-//                Spacer()
-//                    .multilineTextAlignment(.center)
-//                    .frame(maxWidth: .infinity, alignment: .center) // Ensure max width is taken up and text is centered
-//                       .padding(.horizontal)
+                //                Spacer()
+                //                    .multilineTextAlignment(.center)
+                //                    .frame(maxWidth: .infinity, alignment: .center) // Ensure max width is taken up and text is centered
+                //                       .padding(.horizontal)
                 
                 if !description.isEmpty {
                     Text(description)
                         .font(.body)
                         .multilineTextAlignment(.center)
-//                        .padding(.horizontal)
+                    //                        .padding(.horizontal)
                 }
                 Spacer()
                 if !secondaryTextOne.isEmpty {
@@ -164,22 +162,22 @@ struct PageView: View {
                                 .scaledToFit()
                                 .frame(height: 50)
                             
-//                            Spacer()
+                            //                            Spacer()
                         }
                         else {
                             Image(iconThree)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: 43)
-//                            Spacer()
+                            //                            Spacer()
                         }
                         Text(secondaryTextOne)
                             .font(.body)
                             .multilineTextAlignment(.leading)
                             .fixedSize(horizontal: false, vertical: true)
                             .padding(.leading,10)
-                           
-//                            .padding()
+                        
+                        //                            .padding()
                         Spacer()
                     }
                     Spacer()
@@ -193,7 +191,7 @@ struct PageView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: 50)
-//                            Spacer()
+                            //                            Spacer()
                         }
                         if !iconTwo.isEmpty{
                             Image(iconTwo)
@@ -201,7 +199,7 @@ struct PageView: View {
                                 .scaledToFit()
                                 .frame(height: 40)
                             
-//                            Spacer()
+                            //                            Spacer()
                         }
                         Text(secondaryTextTwo)
                             .font(.body)
@@ -209,11 +207,11 @@ struct PageView: View {
                             .fixedSize(horizontal: false, vertical: true)
                             .padding(.top, 10)
                             .padding(.leading,10)
-//                            .padding(.leading)
+                        //                            .padding(.leading)
                         Spacer()
-//                            .padding(.trailing)
+                        //                            .padding(.trailing)
                     }
-                                }
+                }
                 Spacer()
                 if !secondaryTextThree.isEmpty {
                     HStack{
@@ -229,16 +227,16 @@ struct PageView: View {
                             .multilineTextAlignment(.leading)
                             .fixedSize(horizontal: false, vertical: true)
                             .padding(.top, 10)
-//                            .padding(.leading,10)
-//                            .padding(.leading)
+                        //                            .padding(.leading,10)
+                        //                            .padding(.leading)
                         Spacer()
                     }
-                                }
+                }
             }
             .padding()
-            .frame(maxWidth: .infinity, alignment: .top) // Текст прижимаем к верху
+            .frame(maxWidth: .infinity, alignment: .top)
             Spacer()
-            // Основное изображение + наложенная картинка
+            
             if !imageName.isEmpty {
                 ZStack {
                     Image(imageName)
@@ -259,7 +257,6 @@ struct PageView: View {
             }
             Spacer()
                 .frame(maxWidth: .infinity, alignment: .top)
-//            Spacer()
             Button(action: action) {
                 
                 Text(buttonText)
@@ -272,16 +269,16 @@ struct PageView: View {
             .padding(.horizontal)
             .padding(.bottom, 100)
         }.edgesIgnoringSafeArea(.all)
-        .frame(maxHeight: .infinity, alignment: .top) // Всё сдвигаем вверх
-        .padding(.top, 20)
-        .background(Color("backColor"))
+            .frame(maxHeight: .infinity, alignment: .top)
+            .padding(.top, 20)
+            .background(Color("backColor"))
     }
     func imageSize(for name: String) -> CGFloat {
         switch name {
         case "homeImage": return 200
         case "dayMed": return 100
         case "shieldCheck": return 100
-        default: return 250 // Значение по умолчанию
+        default: return 250
         }
     }
 }

@@ -42,6 +42,10 @@ struct HomeView: View {
                     }
                     VStack{
                         
+                        Text("MedDone")
+                            .font(.title2)
+                            .bold()
+                            .foregroundColor(.white)
                         
                         Image("homeImage")
                             .resizable()
@@ -49,10 +53,7 @@ struct HomeView: View {
                             .frame(height: 150)
                         
                         
-                        Text("MedMind")
-                            .font(.title2)
-                            .bold()
-                            .foregroundColor(.white)
+                       
                         
                         
                         
