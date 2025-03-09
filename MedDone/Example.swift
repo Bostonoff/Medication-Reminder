@@ -25,55 +25,59 @@ struct Example: View {
     @State private var selectedTime = "Morning"
     private let timeOptions = ["Morning", "Afternoon", "Night"]
     var filteredMedications: [Medication] {
-            switch selectedTime {
-            case "Morning":
-                return medications.filter { isMorning(time: $0.time) }
-            case "Afternoon":
-                return medications.filter { isAfternoon(time: $0.time) }
-//            case "Evening":
-//                return medications.filter { isEvening(time: $0.time) }
-            case "Night":
-                return medications.filter { isNight(time: $0.time) }
-            default:
-                return medications
-            }
+        switch selectedTime {
+        case "Morning":
+            return medications.filter { isMorning(time: $0.time) }
+        case "Afternoon":
+            return medications.filter { isAfternoon(time: $0.time) }
+        case "Night":
+            return medications.filter { isNight(time: $0.time) }
+        default:
+            return medications
         }
+    }
+    private func getColorForTime(_ time: String) -> Color {
+        switch time {
+        case "Morning":
+            return Color("button")
+        case "Afternoon":
+            return Color("button")
+        case "Night":
+            return Color("button")
+        default:
+            return Color.primary
+        }
+    }
     
     // Helper methods to categorize the time
-        private func isMorning(time: String) -> Bool {
-            return isTimeInRange(time: time, start: "04:00", end: "12:00")
-        }
-        
-        private func isAfternoon(time: String) -> Bool {
-            return isTimeInRange(time: time, start: "12:00", end: "18:00")
-        }
-        
-//        private func isEvening(time: String) -> Bool {
-//            return isTimeInRange(time: time, start: "18:00", end: "23:00")
-//        }
-        
-        private func isNight(time: String) -> Bool {
-            return isTimeInRange(time: time, start: "18:00", end: "04:00", isNight: true)
-        }
-
-    // Helper methods to categorize the time
+    private func isMorning(time: String) -> Bool {
+        return isTimeInRange(time: time, start: "04:00", end: "12:00")
+    }
+    
+    private func isAfternoon(time: String) -> Bool {
+        return isTimeInRange(time: time, start: "12:00", end: "18:00")
+    }
+    
+    private func isNight(time: String) -> Bool {
+        return isTimeInRange(time: time, start: "18:00", end: "04:00", isNight: true)
+    }
+    
+    
     private func isTimeInRange(time: String, start: String, end: String, isNight: Bool = false) -> Bool {
-          let dateFormatter = DateFormatter()
-          dateFormatter.dateFormat = "HH:mm"
-          
-          guard let timeDate = dateFormatter.date(from: time),
-                let startDate = dateFormatter.date(from: start),
-                let endDate = dateFormatter.date(from: end) else {
-              return false
-          }
-          
-          // For night
-          if isNight {
-              return timeDate >= startDate || timeDate < endDate
-          } else {
-              return timeDate >= startDate && timeDate < endDate
-          }
-      }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        
+        guard let timeDate = dateFormatter.date(from: time),
+              let startDate = dateFormatter.date(from: start),
+              let endDate = dateFormatter.date(from: end) else {
+            return false
+        }
+        if isNight {
+            return timeDate >= startDate || timeDate < endDate
+        } else {
+            return timeDate >= startDate && timeDate < endDate
+        }
+    }
     
     var body: some View {
         NavigationView {
@@ -82,8 +86,8 @@ struct Example: View {
                     Text("MedDone")
                         .font(.title)
                         .foregroundColor(Color("button"))
-                        .padding(.leading, 5)
-                        
+                    
+                    
                     
                     Spacer()
                     
@@ -91,11 +95,11 @@ struct Example: View {
                         Image(systemName: "calendar")
                             .foregroundColor(Color("button"))
                             .font(.title2)
-                            .padding(.trailing, 5)
+                        
                     }
                 }
                 
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 5) {
                     Text("Daily Medication Progress")
                         .font(.headline)
                     HStack {
@@ -111,18 +115,18 @@ struct Example: View {
                     let totalCount = medications.count
                     let completionPercentage = totalCount > 0 ? Double(completedCount) / Double(totalCount) : 0.0
                     
-                    // Update progress color directly within the ProgressView
+                    
                     ProgressView(value: completionPercentage, total: 1.0)
                         .progressViewStyle(LinearProgressViewStyle())
                         .frame(height: 20)
-                        .foregroundColor(completionPercentage == 1.0 ? .green : (completionPercentage > 0.13 ? Color("button") : .red))
+                        .tint(completionPercentage == 1.0 ? .green : (completionPercentage > 0.13 ? Color("button") : .red))
                     
                     Text("\(Int(completionPercentage * 100))% Completed")
                         .font(.subheadline)
                         .foregroundColor(completionPercentage == 1.0 ? .green : (completionPercentage > 0.13 ? Color("button") : .red))
                 }
-                .padding()
-//                .background(Color(.systemGray6))
+                .padding(.vertical,20)
+                
                 .cornerRadius(10)
                 
                 Text("Today's medications")
@@ -133,6 +137,7 @@ struct Example: View {
                 Picker("", selection: $selectedTime) {
                     ForEach(timeOptions, id: \.self) { time in
                         Text(time).tag(time)
+                            .foregroundColor(selectedTime == time ? getColorForTime(time) : .primary)
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
@@ -163,13 +168,16 @@ struct Example: View {
                                     .fill(filteredMedications[index].color)
                                     .frame(width: 24, height: 24)
                                     .onTapGesture {
-                                        selectedMedicationIndex = medications.firstIndex { $0.id == filteredMedications[index].id };                                showModal = true
+                                        if let selectedIndex = filteredMedications.firstIndex(where: { $0.id == filteredMedications[index].id }) {
+                                            selectedMedicationIndex = selectedIndex
+                                            showModal = true
+                                        }
                                     }
                             }
                             .padding()
                             .background(Color.white)
                             .cornerRadius(15)
-                            .shadow(radius: 2)
+                            
                         }
                     }
                     .padding(5)
@@ -189,66 +197,35 @@ struct Example: View {
                 
                 Spacer()
             }
-            .padding()
-            .overlay(
-                // Модальное окно
-                Group {
-                    if showModal {
-                        Color.black.opacity(0.4)
-                            .edgesIgnoringSafeArea(.all)
-                            .onTapGesture {
-                                showModal = false
-                            }
-                        
-                        VStack(spacing: 2) {
-                            
-                            Image(systemName: "checkmark.seal.fill").foregroundColor(Color("button")) .font(.system(size: 30))
-                            Text("Are you sure?")
-                                .font(.title)
-                                .bold()
-                                .padding()
-                            Text("Are you sure you want to mark 13:00 tablets?")
-                                .font(.footnote)
-                                .bold()
-                                .multilineTextAlignment(.center)
-                            
-                            HStack {
-                                Button("Taken") {
-                                    if let index = selectedMedicationIndex {
-                                        medications[index].isCompleted = true
-                                        medications [index].color = .green
-                                    }
-                                    showModal = false
-                                }
-                                .frame(width: 80, height: 40)
-                                .background(Color.green)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                                
-                                Button("Missed") {
-                                    if let index = selectedMedicationIndex {
-                                        medications[index].isCompleted = false
-                                        medications[index].color = .red
-                                    }
-                                    showModal = false
-                                }
-                                .frame(width: 80, height: 40)
-                                .background(Color.red)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                            }.padding()
-                        }
-                        .frame(width: 250, height: 250)
-                        .background(Color.white)
-                        .cornerRadius(15)
-                        .shadow(radius: 5)
-                        
-                    }
+            .padding(.horizontal,18).background(Color("backColor"))
+            .alert(isPresented: $showModal) {
+                if let index = selectedMedicationIndex, index < filteredMedications.count {
+                    let medication = filteredMedications[index]
                     
+                    return Alert(
+                        title: Text("Are you sure?"),
+                        message: Text("Is it time to take \(medication.name) at \(medication.time), or should we call it a miss this time?"),
+                        primaryButton: .default(Text("Taken")) {
+                            if let originalIndex = medications.firstIndex(where: { $0.id == medication.id }) {
+                                medications[originalIndex].isCompleted = true
+                                medications[originalIndex].color = .green
+                            }
+                            showModal = false
+                        },
+                        secondaryButton: .destructive(Text("Missed")) {
+                            if let originalIndex = medications.firstIndex(where: { $0.id == medication.id }) {
+                                medications[originalIndex].isCompleted = false
+                                medications[originalIndex].color = .red
+                            }
+                            showModal = false
+                        }
+                    )
                 }
-            )
+                return Alert(title: Text("Error: What's going on? This is Wrong Medication!  "))
+            }
         }
     }
+    
 }
 
 struct Example_Previews: PreviewProvider {

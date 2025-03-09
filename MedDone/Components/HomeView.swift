@@ -98,9 +98,8 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity, alignment: .top)
                 .padding(.bottom, 100)
                 Spacer()
-            }
-           
-            
+            }.background(Color("backColor"))
+            .navigationBarBackButtonHidden(true)
             .onAppear {
                 Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
                     currentTextIndex = (currentTextIndex + 1) % motivationalTexts.count

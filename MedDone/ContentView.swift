@@ -7,14 +7,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
-
     var body: some View {
-        if !hasSeenOnboarding {
-            HomeView()
-        } else {
-            OnboardingView(hasSeenOnboarding: $hasSeenOnboarding)
-        }
+        HomeView()
     }
 }
 struct ContentView_Previews: PreviewProvider {
@@ -22,6 +16,26 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
+
+
+//import SwiftUI
+//
+//struct ContentView: View {
+//    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+//
+//    var body: some View {
+//        if !hasSeenOnboarding {
+//            HomeView()
+//        } else {
+//            OnboardingView(hasSeenOnboarding: $hasSeenOnboarding)
+//        }
+//    }
+//}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ContentView()
+//    }
+//}
 //import SwiftUI
 //
 //struct HomeView: View {

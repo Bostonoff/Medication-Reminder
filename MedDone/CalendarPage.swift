@@ -10,13 +10,13 @@ import SwiftUI
 struct CalendarPage: View {
     @State private var date = Date()
     
-
+    
     let tasks = [
         ("Task 1", true),
         ("Task 2", false),
         ("Task 3", true)
     ]
-
+    
     var body: some View {
         VStack {
             DatePicker(
@@ -29,7 +29,7 @@ struct CalendarPage: View {
             //            .padding(.horizontal, 10)
             .background(.white)
             .cornerRadius(20)
-            .padding(.horizontal, 10)
+            
             Text("Overall Progress: 90%")
                 .padding()
                 .foregroundStyle(Color("dateColor"))
@@ -52,7 +52,7 @@ struct CalendarPage: View {
                             
                             Text(tasks[index].0)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-//                                .padding(.leading, 30)
+                            //                                .padding(.leading, 30)
                             
                             Spacer()
                             
@@ -76,19 +76,19 @@ struct CalendarPage: View {
                     
                 }   .background(.white)
                     .cornerRadius(20)
-                    .padding(.horizontal, 10)
+                //                    .padding(.horizontal, 15)
                     .frame(height:175)
             }
-
+            
             Spacer()
         }
-        
+        .padding(.horizontal, 15)
         .background(Color("background"))
         .edgesIgnoringSafeArea(.bottom)
         .navigationTitle("Calendar")
         .navigationBarTitleDisplayMode(.inline)
-       
-
+        
+        
     }
 }
 

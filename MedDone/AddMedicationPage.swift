@@ -43,16 +43,17 @@ struct AddMedicationPage: View {
                 Text("Name")
                     .font(.headline)
                     .padding(.bottom,-5)
+                    .padding(.top,20)
                 
                 VStack(alignment: .leading, spacing: 10) {
                     AppTextField("Medication Name", text: $medicationName)
-                    Divider() // Разделительная линия
+                    Divider()
                     AppTextField("Description", text: $description)
                 }
                 .padding()
                 .background(Color.white)
                 .cornerRadius(10)
-                .shadow(radius: 1)
+                //                .shadow(radius: 0.2)
                 
                 
                 // Medication Type
@@ -80,7 +81,7 @@ struct AddMedicationPage: View {
                                 
                                 if index < options.count - 1 {
                                     Divider()
-                                        .frame(height: 20) // Высота разделителя
+                                        .frame(height: 20)
                                 }
                             }
                         }
@@ -112,7 +113,7 @@ struct AddMedicationPage: View {
                             .padding()
                             .background(Color.white)
                             .cornerRadius(10)
-                            .shadow(radius: 1)
+                            //                            .shadow(radius: 0.2)
                         }
                     }
                 }
@@ -133,37 +134,12 @@ struct AddMedicationPage: View {
                     .padding()
                     .background(Color.white)
                     .cornerRadius(10)
-                    .shadow(radius: 1)
+                    //                    .shadow(radius: 0.2)
                 }
                 
-                // Time Selection
-                //                VStack(alignment: .leading) {
-                //                    Text("At what Time?")
-                //                        .font(.headline)
-                //
-                //                    Button(action: {
-                //                        showTimePicker.toggle()
-                //                        // Add Time action
-                //                    }) {
-                //                        HStack {
-                //                            Image(systemName: "plus.circle.fill")
-                //                                .font(.system(size: 22))
-                //                                .foregroundColor(Color("button"))
-                //                            Text("Add a Time")
-                //                                .foregroundColor(Color("dateColor"))
-                //                            Spacer()
-                //                        }
-                //                    }
-                //                    .padding()
-                //                    .background(Color.white)
-                //                    .cornerRadius(10)
-                //                    .shadow(radius: 1)
-                //                    Text("IF you schedule a time, we will send you a notification to take your medications").font(.footnote)
-                //                        .foregroundColor(.gray)
-                //                }
+                //              AdMedicationPage View
                 HStack{
                     AdMedicationPage(selectedTimesFromParent: $selectedTwoTimes)
-                    // Now you can use selectedTimes in the parent view as needed
                     
                 }
                 
@@ -172,7 +148,6 @@ struct AddMedicationPage: View {
                 Text("Duration")
                     .font(.headline)
                     .padding(.bottom, -10)
-                // Display the list of added durations
                 ForEach(selectedTwoTimes.indices, id: \.self) { index in
                     VStack(alignment: .leading) {
                         HStack {
@@ -195,47 +170,17 @@ struct AddMedicationPage: View {
                         
                         Divider()
                         
-//                        HStack{
-//                            Button(isEditingDuration && editingIndex == index ? "Save" : "Edit") {
-//                                if isEditingDuration && editingIndex == index {
-//                                    // Save changes
-//                                    if durationList[index].endDate > durationList[index].startDate {
-//                                        // If valid, save the end date change
-//                                        durationList[index].endDate = selectedTime
-//                                    }
-//                                }
-//                                isEditingDuration.toggle()
-//                                editingIndex = isEditingDuration ? index : nil
-//                            }
-//                            .foregroundColor(Color("dateColor"))
-//                            Spacer()
-//                            
-////                            Button(action: {
-////
-////                                durationList.remove(at: index)
-////                            }) {
-////                                Image(systemName: "trash")
-////                                    .foregroundColor(.red)
-////                                    .padding()
-////                            }
-////                            action replaced
-//                            TrashButtonView {
-//                                durationList.remove(at: index)
-//                            }
-//                            
-//                        }
-                        
                         
                     }
                     .padding()
                     .background(Color.white)
                     .cornerRadius(10)
-                    .shadow(radius: 1)
+                    //                    .shadow(radius: 0.2)
                 }
                 
                 
             }
-            .padding()
+            .padding(.horizontal,15)
             //        }
             .navigationTitle("Add Medication")
             .navigationBarTitleDisplayMode(.inline)
@@ -267,77 +212,22 @@ struct AddMedicationPage: View {
                     selectedOption: options[selectedOption].0
                 )
             }
-//            .sheet(isPresented: $showValidationModal) {
-//                VStack {
-//                    Text("Please fill all required fields")
-//                        .font(.headline)
-//                        .foregroundColor(.red)
-//                        .padding()
-//                    
-//                    Button("Close") {
-//                        showValidationModal = false
-//                    }
-//                    .foregroundColor(.blue)
-//                    .padding()
-//                    
-//                    Spacer()
-//                }
-//                .frame(maxWidth: 300, maxHeight: 200)
-//                .background(Color.white)
-//                .cornerRadius(10)
-//                .shadow(radius: 10)
-//            }
-        }
-        .sheet(isPresented: $showFrequencyModal) {
-            FrequencyListView(
-                selectedFrequency: $selectedFrequency,
-                showFrequencyModal: $showFrequencyModal
-            )
-        }
-        .sheet(isPresented: $showTimePicker) {
-            ShowTimeView(
-                selectedTime: $selectedTime,
-                editingIndex: $editingIndex,
-                isPastDate: $isPastDate,
-                durationList: $durationList,
-                showTimePicker: $showTimePicker
-            )
-        }
-//        .sheet(isPresented: $isEditingDuration) {
-//            VStack {
-//                Text("Edit Duration")
-//                    .font(.headline)
-//                    .padding()
-//                
-//                
-//                if let index = editingIndex {
-//                    
-//                    DatePicker("Start Date", selection: $durationList[index].startDate, displayedComponents: [.date, .hourAndMinute])
-//                        .padding()
-//                    
-//                    
-//                    DatePicker("End Date", selection: $durationList[index].endDate, displayedComponents: [.date, .hourAndMinute])
-//                        .padding()
-//                        .foregroundColor(durationList[index].endDate > durationList[index].startDate ? .black : .red)
-//                    
-//                    Button("Save Changes") {
-//                        
-//                        if durationList[index].endDate > durationList[index].startDate {
-//                            isEditingDuration = false
-//                            editingIndex = nil
-//                        } else {
-//                            print("Error: End date and Start Date must be valid.")
-//                        }
-//                    }
-//                    .disabled(durationList[index].endDate <= durationList[index].startDate)
-//                    .foregroundColor(Color("button"))
-//                    .padding()
-//                }
-//                
-//                Spacer()
-//            }
-//            .padding()
-//        }
+        }.background(Color("backColor"))
+            .sheet(isPresented: $showFrequencyModal) {
+                FrequencyListView(
+                    selectedFrequency: $selectedFrequency,
+                    showFrequencyModal: $showFrequencyModal
+                )
+            }
+            .sheet(isPresented: $showTimePicker) {
+                ShowTimeView(
+                    selectedTime: $selectedTime,
+                    editingIndex: $editingIndex,
+                    isPastDate: $isPastDate,
+                    durationList: $durationList,
+                    showTimePicker: $showTimePicker
+                )
+            }
     }
     
 }
@@ -385,7 +275,3 @@ struct AddMedicationPage_Previews: PreviewProvider {
         AddMedicationPage()
     }
 }
-
-
-
-//struct

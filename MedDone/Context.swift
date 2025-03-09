@@ -1,62 +1,10 @@
-////
-////  context.swift
-////  MediMind
-////
-////  Created by Mukhammad Bustonov on 03/03/25.
-////
 //
-//import SwiftUI
+//  Context.swift
+//  MedDone
 //
-//struct Medication: Identifiable {
-//    let id = UUID()
-//    let name: String
-//    let description: String
-//    let doseAmount: String
-//    let frequency: String
-//    let time: Date
-//    let durationList: [(startDate: Date, endDate: Date)]
-//    let type: String
-//}
+//  Created by Mukhammad Bustonov on 03/03/25.
 //
-//struct context: View {
-//    var medication: Medication
-//
-//    var body: some View {
-//        VStack {
-//            Text("Medication Details").font(.title).padding()
-//            
-//            Group {
-//                Text("Name: \(medication.name)")
-//                Text("Description: \(medication.description)")
-//                Text(medication.type == "liquid" ? "Dose Amount: \(medication.doseAmount)" : "Medication Type: \(medication.type.capitalized)")
-//                Text("Frequency: \(medication.frequency)")
-//                Text("Time: \(medication.time, style: .time)")
-//            }
-//            
-//            ForEach(medication.durationList, id: \.startDate) { duration in
-//                Text("Duration: \(duration.startDate, style: .date) - \(duration.endDate, style: .date)")
-//            }
-//            
-//            Spacer()
-//        }
-//        .padding()
-//    }
-//}
-//#Preview {
-//    context(medication: Medication(
-//        name: "Aspirin",
-//        description: "Pain reliever",
-//        doseAmount: "500 mg",
-//        frequency: "Every Day",
-//        time: Date(),
-//        durationList: [(startDate: Date(), endDate: Date().addingTimeInterval(3600))],  // Example duration
-//        type: "pill"
-//    ))
-//}
 
-
-
-//VARINAT ONE OPTION ONE AND NORM IDEA
 import SwiftUI
 
 struct AdMedicationPage: View {
@@ -69,7 +17,7 @@ struct AdMedicationPage: View {
     @State private var editingTimeIndex: Int? = nil
     @State private var selectedTime: Date = Date()
     @State private var isPastDate: Bool = false
-    @Binding var selectedTimesFromParent: [(date: Date, time: Date)] // Added Binding
+    @Binding var selectedTimesFromParent: [(date: Date, time: Date)]
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -91,7 +39,7 @@ struct AdMedicationPage: View {
             .padding()
             .background(Color.white)
             .cornerRadius(10)
-            .shadow(radius: 1)
+            //            .shadow(radius: 0.2)
             
             Text("IF you schedule a time, we will send you a notification to take your medications")
                 .font(.footnote)
@@ -100,23 +48,14 @@ struct AdMedicationPage: View {
             // Display all added times
             VStack {
                 ForEach(selectedTwoTimes.indices, id: \.self) { index in
-                   
+                    
                     HStack {
-                        Text("\(selectedTwoTimes[index].date, style: .date) at \(selectedTwoTimes[index].time, style: .time)")
+                        
+                        Text("\(selectedTwoTimes[index].time, style: .time)")
                             .padding(.vertical, 5)
                         
-                        Spacer()
+//                                                Spacer()
                         
-                        Button(action: {
-                            editingTimeIndex = index
-                            selectedTime = selectedTwoTimes[index].time
-//                            selectedTimesFromParent = selectedTwoTimes
-                            showEditTimePicker.toggle()
-                            
-                        }) {
-                            Image(systemName: "pencil.circle.fill")
-                                .foregroundColor(.orange)
-                        }
                         
                         Button(action: {
                             selectedTwoTimes.remove(at: index)
@@ -125,6 +64,18 @@ struct AdMedicationPage: View {
                             Image(systemName: "minus.circle.fill")
                                 .foregroundColor(.red)
                         }
+//                        Spacer()
+                        Button(action: {
+                            editingTimeIndex = index
+                            selectedTime = selectedTwoTimes[index].time
+                            //                            selectedTimesFromParent = selectedTwoTimes
+                            showEditTimePicker.toggle()
+                            
+                        }) {
+                            Image(systemName: "pencil.circle.fill")
+                                .foregroundColor(.orange)
+                        }
+                        
                     }
                     .padding(.horizontal)
                 }
@@ -147,9 +98,9 @@ struct AdMedicationPage: View {
                 
                 Button("Save Time") {
                     if selectedTime > Date() {
-                       
+                        
                         selectedTwoTimes.append((date: selectedTime, time: selectedTime))
-                        selectedTimesFromParent = selectedTwoTimes // Sync with the parent view
+                        selectedTimesFromParent = selectedTwoTimes
                         showTimePicker.toggle()
                         isPastDate = false
                     } else {
@@ -183,9 +134,9 @@ struct AdMedicationPage: View {
                         if let index = editingTimeIndex {
                             selectedTwoTimes[index].time = selectedTime
                             selectedTwoTimes[index].date = selectedTime
-                          
+                            
                         }
-                        selectedTimesFromParent = selectedTwoTimes // Sync with the parent view
+                        selectedTimesFromParent = selectedTwoTimes
                         showEditTimePicker.toggle()
                         isPastDate = false
                     } else {
