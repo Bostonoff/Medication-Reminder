@@ -98,9 +98,10 @@ struct AdMedicationPage: View {
                 
                 Button("Save Time") {
                     if selectedTime > Date() {
-                        
-                        selectedTwoTimes.append((date: selectedTime, time: selectedTime))
+                        let newEntry = (date: Date(), time: selectedTime) // Start Date = Date(), End Date = selectedTime
+                        selectedTwoTimes.append(newEntry)
                         selectedTimesFromParent = selectedTwoTimes
+                        selectedTime = selectedTwoTimes.last?.time ?? Date()
                         showTimePicker.toggle()
                         isPastDate = false
                     } else {
@@ -132,11 +133,10 @@ struct AdMedicationPage: View {
                 Button("Save Changes") {
                     if selectedTime > Date() {
                         if let index = editingTimeIndex {
-                            selectedTwoTimes[index].time = selectedTime
-                            selectedTwoTimes[index].date = selectedTime
-                            
+                            selectedTwoTimes[index].time = selectedTime  // Меняем только End Date
                         }
                         selectedTimesFromParent = selectedTwoTimes
+                        selectedTime = selectedTwoTimes.last?.time ?? Date()
                         showEditTimePicker.toggle()
                         isPastDate = false
                     } else {

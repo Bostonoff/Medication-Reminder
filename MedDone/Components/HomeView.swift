@@ -69,7 +69,7 @@ struct HomeView: View {
                 
                 VStack{
                     
-                    HStack {
+                    VStack(spacing:20) {
                         NavigationLink(destination: AddMedicationPage()) {
                             Image(systemName: "plus.circle.fill")
                                 .font(.system(size: 50))
@@ -91,7 +91,7 @@ struct HomeView: View {
                             .foregroundColor(.gray)
                             .multilineTextAlignment(.center)
                             .fixedSize(horizontal: false, vertical: true)
-                            .padding(.horizontal, 25)
+                            .padding(.horizontal, 40)
                             .frame(height: 0)
                     }
                 }

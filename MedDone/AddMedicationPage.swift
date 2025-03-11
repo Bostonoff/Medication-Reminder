@@ -6,9 +6,9 @@
 //
 
 import SwiftUI
-
+//import SwiftData
 struct AddMedicationPage: View {
-    //    @Environment(\.presentationMode) var presentationMode
+//    @Environment(\.modelContext) var modelContext
     @State private var medicationName: String = ""
     @State private var description: String = ""
     @State private var doseAmount: String = ""
@@ -207,7 +207,7 @@ struct AddMedicationPage: View {
                     description: description,
                     doseAmount: doseAmount,
                     selectedFrequency: selectedFrequency,
-                    selectedTime: selectedTime,
+                    selectedTime: selectedTwoTimes,
                     durationList: durationList,
                     selectedOption: options[selectedOption].0
                 )
@@ -237,7 +237,7 @@ struct MedicationDetailsPage: View {
     var description: String
     var doseAmount: String
     var selectedFrequency: String
-    var selectedTime: Date
+    var selectedTime: [(date: Date, time: Date)]
     var durationList: [(startDate: Date, endDate: Date)]
     var selectedOption: String
     
@@ -258,11 +258,14 @@ struct MedicationDetailsPage: View {
             }
             
             Text("Frequency: \(selectedFrequency)")
-            Text("Time: \(selectedTime, style: .time)")
+            ForEach(selectedTime, id: \.date) { timeSlot in
+                            Text("Time: \(timeSlot.time, style: .time) on \(timeSlot.date, style: .date)")
+                        }
+                        
             
             
             ForEach(durationList, id: \.startDate) { duration in
-                Text("Duration: \(duration.startDate, style: .date) - \(duration.endDate, style: .date)")
+                Text("Duration: \(duration.startDate, style: .time) - \(duration.endDate, style: .date)")
             }
             
             Spacer()

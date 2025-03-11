@@ -33,13 +33,19 @@ struct FrequencyListView: View {
                     },
                     option: option
                 )
-            }
-            .listStyle(PlainListStyle())
+            }   .background(.red)
             
-            Spacer()
+                .listStyle(.insetGrouped)
+            
+                .background(.red)
+            
+            
+            //            Spacer()
         }
-        .padding(.trailing,25)
-        .edgesIgnoringSafeArea(.all)
+        //        .padding()
+        //        .edgesIgnoringSafeArea(.all)
+        //        .background(Color("backColor"))
+        
     }
 }
 

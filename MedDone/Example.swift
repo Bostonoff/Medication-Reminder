@@ -11,6 +11,9 @@ struct Medication: Identifiable {
 }
 
 struct Example: View {
+    
+//    @Query var medications : [Medication]
+    
     @State private var medications = [
         Medication(name: "Risperidone", time: "11:32", icon: "capsule", isCompleted: false, color: .gray.opacity(0.5)),
         Medication(name: "Risperidone", time: "9:56", icon: "tablets", isCompleted: false, color: .gray.opacity(0.5)),
@@ -233,3 +236,4 @@ struct Example_Previews: PreviewProvider {
         Example()
     }
 }
+
