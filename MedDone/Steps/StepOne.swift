@@ -10,13 +10,9 @@ import SwiftUI
 struct StepOne: View {
     @Namespace private var animationNamespace
     @State private var isNavigating = false
-    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     
     var body: some View {
-        if hasCompletedOnboarding {
-            HomeView()
-        }else{
-            NavigationView {
+        NavigationStack {
                 ZStack {
                     VStack {
                         HStack {
@@ -25,7 +21,7 @@ struct StepOne: View {
                                 .fontWeight(.bold)
                                 .multilineTextAlignment(.center)
                                 .padding(.top, 50)
-                        }
+                        }.padding(.horizontal,30)
                         
                         Spacer(minLength: 20)
                         HStack {
@@ -37,18 +33,14 @@ struct StepOne: View {
                         }
                         Spacer()
                         
-                        NavigationLink(destination: StepTwo(), isActive: $isNavigating) {
+                        NavigationLink(destination: StepTwo())  {
                             Text("Get Started")
                                 .frame(maxWidth: .infinity)
                                 .padding()
                                 .background(Color("button"))
                                 .foregroundColor(.white)
                                 .cornerRadius(20)
-                                .onTapGesture {
-                                    withAnimation(.easeInOut(duration: 0.5)) {
-                                        isNavigating = true
-                                    }
-                                }
+                                .matchedGeometryEffect(id: "button", in: animationNamespace)
                         }.padding(.bottom,25)
                     }
                     .padding()
@@ -56,7 +48,7 @@ struct StepOne: View {
                 }
                 
             }
-        }
+//        }
         
     }
 }

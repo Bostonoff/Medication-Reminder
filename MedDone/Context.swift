@@ -98,7 +98,7 @@ struct AdMedicationPage: View {
                 
                 Button("Save Time") {
                     if selectedTime > Date() {
-                        let newEntry = (date: Date(), time: selectedTime) // Start Date = Date(), End Date = selectedTime
+                        let newEntry = (date: Date(), time: selectedTime)
                         selectedTwoTimes.append(newEntry)
                         selectedTimesFromParent = selectedTwoTimes
                         selectedTime = selectedTwoTimes.last?.time ?? Date()

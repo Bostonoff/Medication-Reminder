@@ -8,7 +8,7 @@
 import SwiftUI
 //import SwiftData
 struct AddMedicationPage: View {
-//    @Environment(\.modelContext) var modelContext
+    //    @Environment(\.modelContext) var modelContext
     @State private var medicationName: String = ""
     @State private var description: String = ""
     @State private var doseAmount: String = ""
@@ -258,14 +258,18 @@ struct MedicationDetailsPage: View {
             }
             
             Text("Frequency: \(selectedFrequency)")
-            ForEach(selectedTime, id: \.date) { timeSlot in
-                            Text("Time: \(timeSlot.time, style: .time) on \(timeSlot.date, style: .date)")
-                        }
-                        
             
+            // Display (time and date)
+            ForEach(selectedTime, id: \.date) { timeSlot in
+                VStack(alignment: .leading) {
+                    Text("At \(timeSlot.date, style: .time)")
+                    Text("On \(timeSlot.time, style: .date)")
+                        .foregroundColor(.gray)
+                }
+            }
             
             ForEach(durationList, id: \.startDate) { duration in
-                Text("Duration: \(duration.startDate, style: .time) - \(duration.endDate, style: .date)")
+                Text("Duration: \(duration.startDate, style: .date) - \(duration.endDate, style: .date)")
             }
             
             Spacer()

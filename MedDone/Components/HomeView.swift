@@ -25,21 +25,21 @@ struct HomeView: View {
                         .frame(height: 320)
                         .edgesIgnoringSafeArea(.top)
                     
-                    HStack {
+//                    HStack {
 //                        Text("Home page")
 //                            .font(.headline)
 //                            .foregroundColor(.white)
 //                            .padding(.leading, 16)
-                        
-                        Spacer()
-                        
+//                        
+//                        Spacer()
+//                        
 //                        NavigationLink(destination: CalendarPage()) {
 //                            Image(systemName: "calendar")
 //                                .foregroundColor(.white)
 //                                .font(.title2)
 //                                .padding(.trailing, 16)
 //                        }
-                    }
+//                    }
                     VStack{
                         
                         Text("MedDone")
@@ -99,13 +99,14 @@ struct HomeView: View {
                 .padding(.bottom, 100)
                 Spacer()
             }.background(Color("backColor"))
-            .navigationBarBackButtonHidden(true)
+//            .navigationBarBackButtonHidden(true)
             .onAppear {
                 Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
                     currentTextIndex = (currentTextIndex + 1) % motivationalTexts.count
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 

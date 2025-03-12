@@ -145,6 +145,7 @@ struct StepTwo: View {
                                 }else {
                                     print("Setting onboarding completed to true")
                                     hasCompletedOnboarding = true
+                                    
                                 }
                             }
                         }) {
@@ -174,7 +175,7 @@ struct PageControl: View {
     
     var body: some View {
         HStack {
-            ForEach(0..<numberOfPages) { index in
+            ForEach(0..<numberOfPages, id: \.self) { index in
                 Circle()
                     .fill(index == currentPage ? Color("button") : Color.gray.opacity(0.3))
                     .frame(width: 10, height: 10)
