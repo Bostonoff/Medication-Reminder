@@ -12,15 +12,13 @@ struct Medication: Identifiable {
 
 struct Example: View {
     
-//    @Query var medications : [Medication]
+    //    @Query var medications : [Medication]
     
     @State private var medications = [
         Medication(name: "Risperidone", time: "11:32", icon: "capsule", isCompleted: false, color: .gray.opacity(0.5)),
-        Medication(name: "Risperidone", time: "9:56", icon: "tablets", isCompleted: false, color: .gray.opacity(0.5)),
-        Medication(name: "Risperidone", time: "10:09", icon: "liquid", isCompleted: false, color: .gray.opacity(0.5)),
-        Medication(name: "Risperidone", time: "10:20", icon: "liquid", isCompleted: false, color: .gray.opacity(0.5)),
-        Medication(name: "Risperidone", time: "15:20", icon: "capsule", isCompleted: false, color: .gray.opacity(0.5)),
-        Medication(name: "Risperidone", time: "00:20", icon: "tablets", isCompleted: false, color: .gray.opacity(0.5)),
+        Medication(name: "Risperidone", time: "19:56", icon: "tablets", isCompleted: false, color: .gray.opacity(0.5)),
+        Medication(name: "Risperidone", time: "14:09", icon: "liquid", isCompleted: false, color: .gray.opacity(0.5)),
+        Medication(name: "Risperidone", time: "00:20", icon: "liquid", isCompleted: false, color: .gray.opacity(0.5)),
     ]
     
     @State private var showModal = false
@@ -137,14 +135,33 @@ struct Example: View {
                     .bold()
                     .padding(.top)
                 
-                Picker("", selection: $selectedTime) {
+                HStack {
                     ForEach(timeOptions, id: \.self) { time in
-                        Text(time).tag(time)
-                            .foregroundColor(selectedTime == time ? getColorForTime(time) : .primary)
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                selectedTime = time
+                            }
+                        }) {
+                            Text(time)
+                                .foregroundColor(selectedTime == time ? getColorForTime(time) : .black)
+                                .padding(3)
+                                .frame(maxWidth: .infinity)
+                                .background(selectedTime == time ? Color.white : Color.clear)
+                                .cornerRadius(10)
+                            
+                        }
+                        
+                        if time != timeOptions.last {
+                            Divider()
+                                .frame(height: 17)
+                                .background(Color.gray.opacity(0.9))
+                            // Divider color
+                        }
                     }
                 }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding(5)
+                .padding(3)
+                .background(Color.gray.opacity(0.09))
+                .cornerRadius(10)
                 
                 ScrollView {
                     VStack(spacing: 10) {
@@ -181,7 +198,8 @@ struct Example: View {
                             .background(Color.white)
                             .cornerRadius(15)
                             
-                        }
+                            
+                        }.transition(.slide)
                     }
                     .padding(5)
                 }
@@ -226,6 +244,10 @@ struct Example: View {
                 }
                 return Alert(title: Text("Error: What's going on? This is Wrong Medication!  "))
             }
+//            .onTapGesture {
+//
+//                               showModal = false
+//                           }
         }
     }
     

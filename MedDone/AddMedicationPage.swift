@@ -71,17 +71,18 @@ struct AddMedicationPage: View {
                                             .frame(width: 20, height: 20)
                                         Text(options[index].1).foregroundColor(.black)
                                     }
-                                    .padding(5)
+                                    .padding(3)
                                     .frame(maxWidth: .infinity)
                                     .background(selectedOption == index ? Color.white : Color.clear)
-                                    .cornerRadius(20)
+                                    .cornerRadius(10)
                                     
                                 }
                                 
                                 
                                 if index < options.count - 1 {
                                     Divider()
-                                        .frame(height: 20)
+                                        .frame(height: 17)
+                                        .background(Color.gray.opacity(0.9))
                                 }
                             }
                         }
@@ -94,6 +95,7 @@ struct AddMedicationPage: View {
                 
                 
                 // Dose Amount
+                
                 if options[selectedOption].0 == "liquid" {
                     VStack(alignment: .leading) {
                         Text("Dose Amount")
@@ -116,6 +118,8 @@ struct AddMedicationPage: View {
                             //                            .shadow(radius: 0.2)
                         }
                     }
+                    .transition(.opacity) // This makes the Dose Amount section appear smoothly.
+                    .animation(.easeInOut(duration: 0.3), value: selectedOption) // Applies the animation when selectedOption changes
                 }
                 
                 // Frequency
@@ -129,7 +133,7 @@ struct AddMedicationPage: View {
                             // Handle change
                             showFrequencyModal.toggle()
                         }
-                        .foregroundColor(Color("dateColor"))
+                        .foregroundColor(Color("button"))
                     }
                     .padding()
                     .background(Color.white)
@@ -169,6 +173,9 @@ struct AddMedicationPage: View {
                         
                         
                         Divider()
+                        HStack{
+                            Text("Edit")
+                        }
                         
                         
                     }

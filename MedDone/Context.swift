@@ -32,7 +32,7 @@ struct AdMedicationPage: View {
                         .font(.system(size: 22))
                         .foregroundColor(Color("button"))
                     Text("Add a Time")
-                        .foregroundColor(Color("dateColor"))
+                        .foregroundColor(Color("button"))
                     Spacer()
                 }
             }
@@ -54,7 +54,7 @@ struct AdMedicationPage: View {
                         Text("\(selectedTwoTimes[index].time, style: .time)")
                             .padding(.vertical, 5)
                         
-//                                                Spacer()
+                        //                                                Spacer()
                         
                         
                         Button(action: {
@@ -64,7 +64,7 @@ struct AdMedicationPage: View {
                             Image(systemName: "minus.circle.fill")
                                 .foregroundColor(.red)
                         }
-//                        Spacer()
+                        //                        Spacer()
                         Button(action: {
                             editingTimeIndex = index
                             selectedTime = selectedTwoTimes[index].time
@@ -108,6 +108,7 @@ struct AdMedicationPage: View {
                         isPastDate = true
                     }
                 }
+                
                 .foregroundColor(Color("button"))
                 .padding()
                 

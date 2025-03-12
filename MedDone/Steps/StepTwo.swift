@@ -159,13 +159,13 @@ struct StepTwo: View {
                     }
                     .padding(.bottom, 20)
                     
-                }
+                }   
                 .padding()
                 .navigationBarBackButtonHidden(true)
                 NavigationLink(destination: HomeView(), isActive: $hasCompletedOnboarding) {
                     EmptyView()
                 }
-            }
+            }.background(Color("backColor"))
         }
     }
 }
