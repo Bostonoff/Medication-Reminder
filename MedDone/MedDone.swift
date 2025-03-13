@@ -13,5 +13,6 @@ struct MedDone: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: Medicationas.self)
     }
 }

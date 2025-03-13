@@ -1,5 +1,5 @@
 import SwiftUI
-//import SwiftData
+import SwiftData
 
 struct Medication: Identifiable {
     let id = UUID()
@@ -12,7 +12,8 @@ struct Medication: Identifiable {
 
 struct Example: View {
     
-    //    @Query var medications : [Medication]
+    @Query var medications2: [Medicationas]
+    @State private var selectedMedicine: Medicationas?
     
     @State private var medications = [
         Medication(name: "Risperidone", time: "11:32", icon: "capsule", isCompleted: false, color: .gray.opacity(0.5)),
@@ -165,9 +166,9 @@ struct Example: View {
                 
                 ScrollView {
                     VStack(spacing: 10) {
-                        ForEach(filteredMedications.indices, id: \.self) { index in
+                        ForEach(medications2) { item in
                             HStack {
-                                Image(filteredMedications[index].icon)
+                                Image(item.medicineType.title)
                                     .foregroundColor(.purple)
                                     .frame(width:20)
                                 
@@ -175,9 +176,9 @@ struct Example: View {
                                     .frame(height: 20)
                                 
                                 VStack(alignment: .leading) {
-                                    Text(filteredMedications[index].name)
+                                    Text(item.name + " " + item.doseAmount)
                                         .bold()
-                                    Text(filteredMedications[index].time)
+                                    Text(item.selectedTime.description)
                                         .font(.subheadline)
                                         .foregroundColor(.gray)
                                 }
@@ -185,13 +186,26 @@ struct Example: View {
                                 Spacer()
                                 
                                 Circle()
-                                    .fill(filteredMedications[index].color)
+                                    .fill(
+                                        {
+                                            switch item.isCompleted {
+                                            case true:
+                                                return Color.green
+                                            case false:
+                                                return Color.red
+                                            default:
+                                                return Color.gray.opacity(0.5)
+                                            }
+                                        }()
+                                    )
                                     .frame(width: 24, height: 24)
                                     .onTapGesture {
-                                        if let selectedIndex = filteredMedications.firstIndex(where: { $0.id == filteredMedications[index].id }) {
-                                            selectedMedicationIndex = selectedIndex
-                                            showModal = true
-                                        }
+//                                        if let selectedIndex = filteredMedications.firstIndex(where: { $0.id == filteredMedications[index].id }) {
+//                                            selectedMedicationIndex = selectedIndex
+//                                            showModal = true
+//                                        }
+                                        selectedMedicine = item
+                                        showModal = true
                                     }
                             }
                             .padding()
@@ -199,7 +213,44 @@ struct Example: View {
                             .cornerRadius(15)
                             
                             
-                        }.transition(.slide)
+                        }
+                        .transition(.slide)
+                        
+//                        ForEach(filteredMedications.indices, id: \.self) { index in
+//                            HStack {
+//                                Image(filteredMedications[index].icon)
+//                                    .foregroundColor(.purple)
+//                                    .frame(width:20)
+//                                
+//                                Divider()
+//                                    .frame(height: 20)
+//                                
+//                                VStack(alignment: .leading) {
+//                                    Text(filteredMedications[index].name)
+//                                        .bold()
+//                                    Text(filteredMedications[index].time)
+//                                        .font(.subheadline)
+//                                        .foregroundColor(.gray)
+//                                }
+//                                
+//                                Spacer()
+//                                
+//                                Circle()
+//                                    .fill(filteredMedications[index].color)
+//                                    .frame(width: 24, height: 24)
+//                                    .onTapGesture {
+//                                        if let selectedIndex = filteredMedications.firstIndex(where: { $0.id == filteredMedications[index].id }) {
+//                                            selectedMedicationIndex = selectedIndex
+//                                            showModal = true
+//                                        }
+//                                    }
+//                            }
+//                            .padding()
+//                            .background(Color.white)
+//                            .cornerRadius(15)
+//                            
+//                            
+//                        }.transition(.slide)
                     }
                     .padding(5)
                 }
@@ -220,29 +271,33 @@ struct Example: View {
             }
             .padding(.horizontal,18).background(Color("backColor"))
             .alert(isPresented: $showModal) {
-                if let index = selectedMedicationIndex, index < filteredMedications.count {
-                    let medication = filteredMedications[index]
+//                if let index = selectedMedicationIndex, index < filteredMedications.count {
+//                    let medication = filteredMedications[index]
                     
                     return Alert(
                         title: Text("Are you sure?"),
-                        message: Text("Is it time to take \(medication.name) at \(medication.time), or should we call it a miss this time?"),
+                        message: Text("Is it time to take \(selectedMedicine?.name) at \(selectedMedicine?.selectedTime.description), or should we call it a miss this time?"),
                         primaryButton: .default(Text("Taken")) {
-                            if let originalIndex = medications.firstIndex(where: { $0.id == medication.id }) {
-                                medications[originalIndex].isCompleted = true
-                                medications[originalIndex].color = .green
-                            }
+                            
+                            selectedMedicine?.isCompleted = true
+//                            if let originalIndex = medications.firstIndex(where: { $0.id == medication.id }) {
+//                                medications[originalIndex].isCompleted = true
+//                                medications[originalIndex].color = .green
+//                            }
                             showModal = false
                         },
                         secondaryButton: .destructive(Text("Missed")) {
-                            if let originalIndex = medications.firstIndex(where: { $0.id == medication.id }) {
-                                medications[originalIndex].isCompleted = false
-                                medications[originalIndex].color = .red
-                            }
+                            selectedMedicine?.isCompleted = false
+                            
+//                            if let originalIndex = medications.firstIndex(where: { $0.id == medication.id }) {
+//                                medications[originalIndex].isCompleted = false
+//                                medications[originalIndex].color = .red
+//                            }
                             showModal = false
                         }
                     )
-                }
-                return Alert(title: Text("Error: What's going on? This is Wrong Medication!  "))
+//                }
+//                return Alert(title: Text("Error: What's going on? This is Wrong Medication!  "))
             }
 //            .onTapGesture {
 //

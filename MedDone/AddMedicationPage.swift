@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
-//import SwiftData
+import SwiftData
+
 struct AddMedicationPage: View {
-    //    @Environment(\.modelContext) var modelContext
+    @Environment(\.modelContext) var modelContext
+    @Environment(\.presentationMode) var presentationMode
+    
     @State private var medicationName: String = ""
     @State private var description: String = ""
     @State private var doseAmount: String = ""
@@ -26,6 +29,8 @@ struct AddMedicationPage: View {
     @State private var navigateToDetailsPage = false
     @State private var showValidationModal: Bool = true
     
+    @State private var medicineType: MedicineType = .capsule
+    @State private var frequencyType: FrequencyType = .everyDay
     
     @State private var selectedTwoTimes: [(date: Date, time: Date)] = []
     let options = [
@@ -59,33 +64,62 @@ struct AddMedicationPage: View {
                 // Medication Type
                 VStack {
                     HStack {
-                        ForEach(0..<options.count, id: \.self) { index in
+                        
+                        ForEach(MedicineType.allCases, id: \.title) { type in
                             HStack {
                                 Button(action: {
-                                    selectedOption = index
+                                    medicineType = type
                                 }) {
                                     HStack {
-                                        Image(options[index].0)
+                                        Image(type.title)
                                             .resizable()
                                             .scaledToFit()
                                             .frame(width: 20, height: 20)
-                                        Text(options[index].1).foregroundColor(.black)
+                                        Text(type.title).foregroundColor(.black)
                                     }
                                     .padding(3)
                                     .frame(maxWidth: .infinity)
-                                    .background(selectedOption == index ? Color.white : Color.clear)
+                                    .background(medicineType == type ? Color.white : Color.clear)
                                     .cornerRadius(10)
                                     
                                 }
                                 
                                 
-                                if index < options.count - 1 {
+                                if type != .liquid {
                                     Divider()
                                         .frame(height: 17)
                                         .background(Color.gray.opacity(0.9))
                                 }
                             }
                         }
+                        
+//                        ForEach(0..<options.count, id: \.self) { index in
+//                            HStack {
+//                                Button(action: {
+//                                    selectedOption = index
+//                                }) {
+//                                    HStack {
+//                                        Image(options[index].0)
+//                                            .resizable()
+//                                            .scaledToFit()
+//                                            .frame(width: 20, height: 20)
+//                                        Text(options[index].1).foregroundColor(.black)
+//                                    }
+//                                    .padding(3)
+//                                    .frame(maxWidth: .infinity)
+//                                    .background(selectedOption == index ? Color.white : Color.clear)
+//                                    .cornerRadius(10)
+//                                    
+//                                }
+//                                
+//                                
+//                                if index < options.count - 1 {
+//                                    Divider()
+//                                        .frame(height: 17)
+//                                        .background(Color.gray.opacity(0.9))
+//                                }
+//                            }
+//                        }
                     }
                     .padding(3)
                     .background(Color.gray.opacity(0.1))
@@ -96,7 +130,7 @@ struct AddMedicationPage: View {
                 
                 // Dose Amount
                 
-                if options[selectedOption].0 == "liquid" {
+                if medicineType == .liquid {
                     VStack(alignment: .leading) {
                         Text("Dose Amount")
                             .font(.headline)
@@ -127,7 +161,7 @@ struct AddMedicationPage: View {
                     Text("When will you take this?")
                         .font(.headline)
                     HStack {
-                        Text(selectedFrequency)
+                        Text(frequencyType.title)
                         Spacer()
                         Button("Change") {
                             // Handle change
@@ -194,17 +228,18 @@ struct AddMedicationPage: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        if medicationName.isEmpty && description.isEmpty && selectedFrequency.isEmpty && (options[selectedOption].0 == "liquid" || doseAmount.isEmpty) {
-                            showValidationModal = true
-                            
-                        }
-                        navigateToDetailsPage.toggle()
+//                        if medicationName.isEmpty && description.isEmpty && selectedFrequency.isEmpty && (options[selectedOption].0 == "liquid" || doseAmount.isEmpty) {
+//                            showValidationModal = true
+//                            
+//                        }
+//                        navigateToDetailsPage.toggle()
+                        saveMedicine()
                     }
                     .foregroundColor(
-                        medicationName.isEmpty || description.isEmpty || selectedFrequency.isEmpty || (options[selectedOption].0 == "liquid" && doseAmount.isEmpty) || selectedTwoTimes.isEmpty ? Color.gray : Color("button")
+                        medicationName.isEmpty || description.isEmpty || selectedFrequency.isEmpty || (medicineType == .liquid ? doseAmount.isEmpty : false) || selectedTwoTimes.isEmpty ? Color.gray : Color("button")
                     )
                     .padding()
-                    .disabled(medicationName.isEmpty || description.isEmpty || selectedFrequency.isEmpty || (options[selectedOption].0 == "liquid" && doseAmount.isEmpty) || selectedTwoTimes.isEmpty)
+                    .disabled(medicationName.isEmpty || description.isEmpty || selectedFrequency.isEmpty || (medicineType == .liquid ? doseAmount.isEmpty : false) || selectedTwoTimes.isEmpty)
                     .cornerRadius(10)
                 }
             }
@@ -222,7 +257,7 @@ struct AddMedicationPage: View {
         }.background(Color("backColor"))
             .sheet(isPresented: $showFrequencyModal) {
                 FrequencyListView(
-                    selectedFrequency: $selectedFrequency,
+                    selectedFrequency: $frequencyType,
                     showFrequencyModal: $showFrequencyModal
                 )
             }
@@ -235,6 +270,31 @@ struct AddMedicationPage: View {
                     showTimePicker: $showTimePicker
                 )
             }
+    }
+    
+    private func saveMedicine() {
+        selectedTwoTimes.forEach { item in
+            
+            let newMedicine = Medicationas(
+                name: medicationName,
+                desc: description,
+                medicineType: medicineType,
+                frequencyType: frequencyType,
+                selectedTime: item.time,
+                doseType: medicineType == .liquid ? doseAmount : nil
+            )
+            // Save the medicine to the context
+            modelContext.insert(newMedicine)
+        }
+        
+        // Commit changes
+        do {
+            try modelContext.save()
+        } catch {
+            print("Error saving task: \(error.localizedDescription)")
+        }
+        
+        presentationMode.wrappedValue.dismiss()
     }
     
 }

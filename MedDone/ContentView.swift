@@ -5,13 +5,21 @@
 //  Created by Mukhammad Bustonov on 01/03/25.
 //
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+    
+    @Query var medicines: [Medicationas]
+    
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     var body: some View {
-        if hasCompletedOnboarding{
-            HomeView()
-        }else {
+        if hasCompletedOnboarding {
+            if medicines.isEmpty {
+                HomeView()
+            } else {
+                Example()
+            }
+        } else {
             StepOne()
         }
       

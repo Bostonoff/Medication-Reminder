@@ -8,15 +8,7 @@
 import SwiftUI
 
 struct FrequencyListView: View {
-    private let frequencyOptions = [
-        "Every Day",
-        "Cyclically",
-        "Specific Days of the Week",
-        "Every Few Days",
-        "As Needed"
-    ]
-    
-    @Binding var selectedFrequency: String
+    @Binding var selectedFrequency: FrequencyType
     @Binding var showFrequencyModal: Bool
     
     var body: some View {
@@ -25,7 +17,7 @@ struct FrequencyListView: View {
                 .font(.headline)
                 .padding()
             
-            List(frequencyOptions, id: \.self) { option in
+            List(FrequencyType.allCases, id: \.title) { option in
                 FrequencyView(
                     action: {
                         selectedFrequency = option
@@ -52,7 +44,7 @@ struct FrequencyListView: View {
 #Preview {
     FrequencyListView(
         selectedFrequency: .constant(
-            "Every Day"
+            .asNeeded
         ),
         showFrequencyModal: .constant(
             true
