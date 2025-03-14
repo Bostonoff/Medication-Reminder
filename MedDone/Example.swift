@@ -26,16 +26,17 @@ struct Example: View {
     @State private var selectedMedicationIndex: Int? = nil
     @State private var selectedTime = "Morning"
     private let timeOptions = ["Morning", "Afternoon", "Night"]
-    var filteredMedications: [Medication] {
+    
+    var filteredMedications: [Medicationas] {
         switch selectedTime {
         case "Morning":
-            return medications.filter { isMorning(time: $0.time) }
+            return medications2.filter { isMorning(time: $0.selectedTime) }
         case "Afternoon":
-            return medications.filter { isAfternoon(time: $0.time) }
+            return medications2.filter { isAfternoon(time: $0.selectedTime) }
         case "Night":
-            return medications.filter { isNight(time: $0.time) }
+            return medications2.filter { isNight(time: $0.selectedTime) }
         default:
-            return medications
+            return medications2
         }
     }
     private func getColorForTime(_ time: String) -> Color {
@@ -51,35 +52,80 @@ struct Example: View {
         }
     }
     
-    // Helper methods to categorize the time
-    private func isMorning(time: String) -> Bool {
-        return isTimeInRange(time: time, start: "04:00", end: "12:00")
-    }
-    
-    private func isAfternoon(time: String) -> Bool {
-        return isTimeInRange(time: time, start: "12:00", end: "18:00")
-    }
-    
-    private func isNight(time: String) -> Bool {
-        return isTimeInRange(time: time, start: "18:00", end: "04:00", isNight: true)
-    }
-    
-    
-    private func isTimeInRange(time: String, start: String, end: String, isNight: Bool = false) -> Bool {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm"
+//    // Helper methods to categorize the time
+//    private func isMorning(time: String) -> Bool {
+//        return isTimeInRange(time: time, start: "04:00", end: "12:00")
+//    }
+//    
+//    private func isAfternoon(time: String) -> Bool {
+//        return isTimeInRange(time: time, start: "12:00", end: "18:00")
+//    }
+//    
+//    private func isNight(time: String) -> Bool {
+//        return isTimeInRange(time: time, start: "18:00", end: "04:00", isNight: true)
+//    }
+//    
+//    
+//    private func isTimeInRange(time: String, start: String, end: String, isNight: Bool = false) -> Bool {
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "HH:mm"
+//        
+//        guard let timeDate = dateFormatter.date(from: time),
+//              let startDate = dateFormatter.date(from: start),
+//              let endDate = dateFormatter.date(from: end) else {
+//            return false
+//        }
+//        if isNight {
+//            return timeDate >= startDate || timeDate < endDate
+//        } else {
+//            return timeDate >= startDate && timeDate < endDate
+//        }
+//    }
+    private func extractTime(from dateTime: String) -> String? {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+            guard let date = dateFormatter.date(from: dateTime) else { return nil }
+            
+            let timeFormatter = DateFormatter()
+            timeFormatter.dateFormat = "h:mm a"
+            return timeFormatter.string(from: date)
+        }
         
-        guard let timeDate = dateFormatter.date(from: time),
-              let startDate = dateFormatter.date(from: start),
-              let endDate = dateFormatter.date(from: end) else {
-            return false
-        }
-        if isNight {
-            return timeDate >= startDate || timeDate < endDate
-        } else {
-            return timeDate >= startDate && timeDate < endDate
-        }
+        // Helper methods to categorize the time
+    func isMorning(time: Date) -> Bool {
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: time)
+        return hour >= 6 && hour < 12
     }
+
+    func isAfternoon(time: Date) -> Bool {
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: time)
+        return hour >= 12 && hour < 18
+    }
+
+    func isNight(time: Date) -> Bool {
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: time)
+        return hour >= 18 || hour < 6
+    }
+        
+        private func isTimeInRange(time: String, start: String, end: String, isNight: Bool = false) -> Bool {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "HH:mm"
+            
+            guard let timeDate = dateFormatter.date(from: time),
+                  let startDate = dateFormatter.date(from: start),
+                  let endDate = dateFormatter.date(from: end) else {
+                return false
+            }
+            if isNight {
+                return timeDate >= startDate || timeDate < endDate
+            } else {
+                return timeDate >= startDate && timeDate < endDate
+            }
+        }
     
     var body: some View {
         NavigationView {
@@ -105,23 +151,27 @@ struct Example: View {
                     Text("Daily Medication Progress")
                         .font(.headline)
                     HStack {
-                        Text("\(medications.filter { $0.isCompleted }.count) of \(medications.count) Completed")
+                        Text("\(medications2.filter { $0.isCompleted ?? false }.count) of \(medications2.count) Completed")
                             .font(.subheadline)
                             .foregroundColor(.gray)
                         Image(systemName: "checkmark.circle")
                             .font(.subheadline)
                             .foregroundColor(Color("button"))
                     }
-                    
-                    let completedCount = medications.filter { $0.isCompleted }.count
-                    let totalCount = medications.count
+                    // Calculate progress for all medications (not filtered by time)
+                    let completedCount = medications2.filter { $0.isCompleted ?? false }.count
+                    let totalCount = medications2.count
                     let completionPercentage = totalCount > 0 ? Double(completedCount) / Double(totalCount) : 0.0
                     
+//                    // Calculate progress for filtering medications (not for all )
+//                    let completedCount = filteredMedications.filter { $0.isCompleted ?? false }.count
+//                    let totalCount = filteredMedications.count
+//                    let completionPercentage = totalCount > 0 ? Double(completedCount) / Double(totalCount) : 0.0
                     
                     ProgressView(value: completionPercentage, total: 1.0)
                         .progressViewStyle(LinearProgressViewStyle())
                         .frame(height: 20)
-                        .tint(completionPercentage == 1.0 ? .green : (completionPercentage > 0.13 ? Color("button") : .red))
+                        .tint(completionPercentage == 1.0 ? Color("button") : (completionPercentage > 0.13 ? Color("button") : .red))
                     
                     Text("\(Int(completionPercentage * 100))% Completed")
                         .font(.subheadline)
@@ -166,7 +216,7 @@ struct Example: View {
                 
                 ScrollView {
                     VStack(spacing: 10) {
-                        ForEach(medications2) { item in
+                        ForEach(filteredMedications) { item in
                             HStack {
                                 Image(item.medicineType.title)
                                     .foregroundColor(.purple)
@@ -178,8 +228,7 @@ struct Example: View {
                                 VStack(alignment: .leading) {
                                     Text(item.name + " " + item.doseAmount)
                                         .bold()
-                                    Text(item.selectedTime.description)
-                                        .font(.subheadline)
+                                    Text(extractTime(from: item.selectedTime.description) ?? "Invalid Time")                                        .font(.subheadline)
                                         .foregroundColor(.gray)
                                 }
                                 
@@ -200,10 +249,7 @@ struct Example: View {
                                     )
                                     .frame(width: 24, height: 24)
                                     .onTapGesture {
-//                                        if let selectedIndex = filteredMedications.firstIndex(where: { $0.id == filteredMedications[index].id }) {
-//                                            selectedMedicationIndex = selectedIndex
-//                                            showModal = true
-//                                        }
+
                                         selectedMedicine = item
                                         showModal = true
                                     }
@@ -221,10 +267,10 @@ struct Example: View {
 //                                Image(filteredMedications[index].icon)
 //                                    .foregroundColor(.purple)
 //                                    .frame(width:20)
-//                                
+//
 //                                Divider()
 //                                    .frame(height: 20)
-//                                
+//
 //                                VStack(alignment: .leading) {
 //                                    Text(filteredMedications[index].name)
 //                                        .bold()
@@ -232,9 +278,9 @@ struct Example: View {
 //                                        .font(.subheadline)
 //                                        .foregroundColor(.gray)
 //                                }
-//                                
+//
 //                                Spacer()
-//                                
+//
 //                                Circle()
 //                                    .fill(filteredMedications[index].color)
 //                                    .frame(width: 24, height: 24)
@@ -248,8 +294,8 @@ struct Example: View {
 //                            .padding()
 //                            .background(Color.white)
 //                            .cornerRadius(15)
-//                            
-//                            
+//
+//
 //                        }.transition(.slide)
                     }
                     .padding(5)
@@ -271,33 +317,27 @@ struct Example: View {
             }
             .padding(.horizontal,18).background(Color("backColor"))
             .alert(isPresented: $showModal) {
-//                if let index = selectedMedicationIndex, index < filteredMedications.count {
-//                    let medication = filteredMedications[index]
+                let timeString = selectedMedicine?.selectedTime.description ?? "Unknown Time"
+                let extractedTime = extractTime(from: timeString) ?? "Invalid Time"
+                
                     
                     return Alert(
                         title: Text("Are you sure?"),
-                        message: Text("Is it time to take \(selectedMedicine?.name) at \(selectedMedicine?.selectedTime.description), or should we call it a miss this time?"),
+                        message: Text("Is it time to take \(selectedMedicine?.name ?? "your medicine") at \(extractedTime), or should we call it a miss this time?"),
                         primaryButton: .default(Text("Taken")) {
                             
                             selectedMedicine?.isCompleted = true
-//                            if let originalIndex = medications.firstIndex(where: { $0.id == medication.id }) {
-//                                medications[originalIndex].isCompleted = true
-//                                medications[originalIndex].color = .green
-//                            }
+
                             showModal = false
                         },
                         secondaryButton: .destructive(Text("Missed")) {
                             selectedMedicine?.isCompleted = false
                             
-//                            if let originalIndex = medications.firstIndex(where: { $0.id == medication.id }) {
-//                                medications[originalIndex].isCompleted = false
-//                                medications[originalIndex].color = .red
-//                            }
+
                             showModal = false
                         }
                     )
-//                }
-//                return Alert(title: Text("Error: What's going on? This is Wrong Medication!  "))
+
             }
 //            .onTapGesture {
 //
@@ -313,4 +353,3 @@ struct Example_Previews: PreviewProvider {
         Example()
     }
 }
-
